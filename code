@@ -1,0 +1,86 @@
+#include <stdio.h>
+#include<string.h>
+ struct voyageur{
+     int idvoyageur;
+     char nom[30];
+ }voyageur;
+  struct reservation{
+     int id;
+     int numbus;
+     int idvoyageur;
+ }reservation;
+  struct bus{
+     int numbus;
+     int places;
+ }bus;
+ struct voyageur v[200];
+ struct reservation reserv[200];
+struct bus b[50];
+ int nbvoyageur=0,nbreservation=0,nbbus=0;
+ //Créer un nouveau compte voyageur
+ void creer_compte_voyageur(int id,char nom){
+      struct voyageur nv;
+     nv.idvoyageur=id;
+     strcpy(nv.nom,nom);
+     v[nbvoyageur++]=nv;
+ }
+ //Créer une nouvelle réservation
+ void creer_reservation(int id,int numbus,int idvoyageur){
+     struct reservation nv;
+     nv.id=id;
+     nv.numbus=numbus;
+     nv.idvoyageur=idvoyageur;
+     reserv[nbreservation++]=nv;
+     for(int i=0;i<nbbus;i++){
+         if(b[i].numbus==numbus){
+            b[i].places--;
+            break;}
+     }
+ }
+ //Afficher les détails des bus
+ void detail_bus(){
+     for(int i=0;i<nbbus;i++){
+         printf("le bus num %d a %d place \n",b[i].numbus,b[i].places);
+     }
+ }
+ //Afficher et modifier les détails d’une réservation
+ void detail_reservation(int id,int numbus){
+     for(int i=0;i<nbreservation;i++){
+         if(reserv[i].id==id){
+             reserv[i].numbus=numbus;
+             printf("(%d,%d,%d)",id,numbus,reserv[i].idvoyageur);
+             
+         }
+     }
+ }
+ //identifier le numéro de bus associé à chaque voyageur
+ void num_bus(){
+     for(int i=0;i<nbvoyageur;i++){
+         int id=v[i].idvoyageur;
+         for(int j=0;j<nbreservation;j++){
+             if(reserv[j].idvoyageur==id){
+                 printf("pour le voyageurd'id %d don bus est num %d \n ",id,reserv[j].numbus);
+                      break;
+             }
+         }
+     }
+ }
+ //annuler une reservation 
+ void annuler_reservation(int id){
+     for(int i=0;i<nbreservation;i++){
+         if(reserv[i].id==id){
+             for(int j=0;j<nbbus;j++){
+                 if (b[j].numbus==reserv[i].numbus){
+                     b[j].places++;
+                     break;
+                 }
+             }
+             for(int j=0;j<nbreservation-1;j++){
+                 reserv[j]=reserv[j+1];
+             }
+             nbreservation--;
+             return;
+         }
+     }
+     printf("reservation non trouvée");
+ }
